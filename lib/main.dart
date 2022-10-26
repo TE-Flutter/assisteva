@@ -9,7 +9,7 @@ late SQCollection categories, courses, lessons;
 
 void main() async {
   await SQApp.init("Assisteva",
-      userDocFields: [SQStringField("Telegram Handle")],
+      userDocFields: [SQStringField("Telegram Username")],
       firebaseOptions: DefaultFirebaseOptions.currentPlatform);
 
   await UserSettings.setSettings([
