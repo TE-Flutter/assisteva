@@ -1,3 +1,18 @@
+# Assisteva_platform
+
+The 1st educational courses platform for people with disabilities and their caretakers.
+
+## Getting Started
+
+This project is a starting point for a Flutter application.
+
+
+
+
+
+
+________________________________________
+
 # course_example_app
 
 A new Flutter project.
