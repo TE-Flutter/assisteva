@@ -26,7 +26,7 @@ void main() async {
     SQStringField("Title"),
     SQStringField("Description"),
     SQRefField("Categories", collection: categories),
-    SQRefDocsField("Lessons",
+    SQInverseRefsField("Lessons",
         refCollection: () => lessons, refFieldName: "Course"),
   ], actions: [
     GoScreenAction("Go to Lessons",
@@ -38,17 +38,12 @@ void main() async {
     SQStringField("Title"),
     SQStringField("Description"),
     SQRefField("Course", collection: courses),
-    VideoLinkField("Video Link"),
   ]);
 
-  SQApp.run(
-      SQNavBar(
-        [
-          GalleryScreen(collection: categories),
-          GalleryScreen(collection: courses),
-          // GalleryScreen(collection: lessons),
-          UserSettings.settingsScreen(),
-        ],
-      ),
-      drawer: SQDrawer([]));
+  SQApp.run([
+    GalleryScreen(collection: categories),
+    GalleryScreen(collection: courses),
+    // GalleryScreen(collection: lessons),
+    UserSettings.settingsScreen(),
+  ], drawer: SQDrawer([]));
 }
