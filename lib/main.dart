@@ -1,54 +1,79 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
+import 'package:course_example_app/flashcards.dart';
+import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
+import 'package:course_example_app/flashcard_view.dart';
 
-import 'firebase_options.dart';
-import 'package:soar_quest/soar_quest.dart';
+void main() {
+  runApp(MyApp());
+}
 
-late SQCollection categories, courses, lessons;
+class MyApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _MyAppState();
+}
 
-void main() async {
-  await SQApp.init("Assisteva",
-      userDocFields: [SQStringField("Telegram Username")],
-      firebaseOptions: DefaultFirebaseOptions.currentPlatform);
+class _MyAppState extends State<MyApp> {
+  List<Flashcard> _flashcards = [
+    Flashcard(
+        question: "What programming language does Flutter use?",
+        answer: "Dart"),
+    Flashcard(question: "Application name?", answer: "Assisteva"),
+    Flashcard(
+        question: "Our teacher's full name?",
+        answer: "Ahmed Alaa Abdelgawad Abdelgawad ElBatanony")
+  ];
 
-  await UserSettings.setSettings([
-    SQBoolField("Visual Impairment", value: false),
-  ]);
+  int _currentIndex = 0;
 
-  categories = FirestoreCollection(id: "Categories", fields: [
-    SQStringField("Title"),
-    SQStringField("Description"),
-    SQImageField("Image"),
-  ]);
-
-  courses = FirestoreCollection(id: "Courses", fields: [
-    SQStringField("Title"),
-    SQStringField("Description"),
-    SQRefField("Categories", collection: categories),
-    SQRefDocsField("Lessons",
-        refCollection: () => lessons, refFieldName: "Course"),
-  ], actions: [
-    GoScreenAction("Go to Lessons",
-        icon: Icons.note,
-        screen: (courseDoc) => CollectionScreen(collection: lessons))
-  ]);
-
-  lessons = FirestoreCollection(id: "Lessons", fields: [
-    SQStringField("Title"),
-    SQStringField("Description"),
-    SQRefField("Course", collection: courses),
-    VideoLinkField("Video Link"),
-  ]);
-
-  SQApp.run(
-      SQNavBar(
-        [
-          GalleryScreen(collection: categories),
-          GalleryScreen(collection: courses),
-          // GalleryScreen(collection: lessons),
-          UserSettings.settingsScreen(),
-        ],
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                  width: 250,
+                  height: 250,
+                  child: FlipCard(
+                      front: FlashcardView(
+                        text: _flashcards[_currentIndex].question,
+                      ),
+                      back: FlashcardView(
+                        text: _flashcards[_currentIndex].answer,
+                      ))),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  OutlinedButton.icon(
+                      onPressed: showPreviousCard,
+                      icon: Icon(Icons.chevron_left),
+                      label: Text('Prev')),
+                  OutlinedButton.icon(
+                      onPressed: showNextCard,
+                      icon: Icon(Icons.chevron_right),
+                      label: Text('Next')),
+                ],
+              )
+            ],
+          ),
+        ),
       ),
-      drawer: SQDrawer([]));
+    );
+  }
+
+  void showNextCard() {
+    setState(() {
+      _currentIndex =
+          (_currentIndex + 1 < _flashcards.length) ? _currentIndex + 1 : 0;
+    });
+  }
+
+  void showPreviousCard() {
+    setState(() {
+      _currentIndex =
+          (_currentIndex - 1 >= 0) ? _currentIndex - 1 : _flashcards.length - 1;
+    });
+  }
 }
