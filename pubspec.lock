@@ -170,7 +170,7 @@ packages:
     source: hosted
     version: "3.3.9"
   flip_card:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flip_card
       url: "https://pub.dartlang.org"

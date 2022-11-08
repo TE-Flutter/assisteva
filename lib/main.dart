@@ -1,7 +1,7 @@
-import 'package:flip_cards/flashcards.dart';
-import 'package:flip_cards/flashcard_view.dart';
+import 'package:course_example_app/flashcards.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
+import 'package:course_example_app/flashcard_view.dart';
 
 void main() {
   runApp(MyApp());
