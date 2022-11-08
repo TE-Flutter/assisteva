@@ -1,49 +1,103 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
+import 'package:flip_card/flip_card.dart';
 
-import 'firebase_options.dart';
-import 'package:soar_quest/soar_quest.dart';
+class Flashcard {
+  final String question;
+  final String answer;
 
-late SQCollection categories, courses, lessons;
+  Flashcard({required this.question, required this.answer});
+}
 
-void main() async {
-  await SQApp.init("Assisteva",
-      userDocFields: [SQStringField("Telegram Username")],
-      firebaseOptions: DefaultFirebaseOptions.currentPlatform);
+class FlashcardView extends StatelessWidget {
+  final String text;
 
-  await UserSettings.setSettings([
-    SQBoolField("Visual Impairment", value: false),
-  ]);
+  FlashcardView({Key? key, required this.text}) : super(key: key);
 
-  categories = FirestoreCollection(id: "Categories", fields: [
-    SQStringField("Title"),
-    SQStringField("Description"),
-    SQImageField("Image"),
-  ]);
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      child: Center(
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+}
 
-  courses = FirestoreCollection(id: "Courses", fields: [
-    SQStringField("Title"),
-    SQStringField("Description"),
-    SQRefField("Categories", collection: categories),
-    SQInverseRefsField("Lessons",
-        refCollection: () => lessons, refFieldName: "Course"),
-  ], actions: [
-    GoScreenAction("Go to Lessons",
-        icon: Icons.note,
-        screen: (courseDoc) => CollectionScreen(collection: lessons))
-  ]);
+void main() {
+  runApp(MyApp());
+}
 
-  lessons = FirestoreCollection(id: "Lessons", fields: [
-    SQStringField("Title"),
-    SQStringField("Description"),
-    SQRefField("Course", collection: courses),
-  ]);
+class MyApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _MyAppState();
+}
 
-  SQApp.run([
-    GalleryScreen(collection: categories),
-    GalleryScreen(collection: courses),
-    // GalleryScreen(collection: lessons),
-    UserSettings.settingsScreen(),
-  ], drawer: SQDrawer([]));
+class _MyAppState extends State<MyApp> {
+  List<Flashcard> _flashcards = [
+    Flashcard(
+        question: "What programming language does Flutter use?",
+        answer: "Dart"),
+    Flashcard(question: "Application name?", answer: "Assisteva"),
+    Flashcard(
+        question: "Our teacher's full name?",
+        answer: "Ahmed Alaa Abdelgawad Abdelgawad ElBatanony")
+  ];
+
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                  width: 250,
+                  height: 250,
+                  child: FlipCard(
+                      front: FlashcardView(
+                        text: _flashcards[_currentIndex].question,
+                      ),
+                      back: FlashcardView(
+                        text: _flashcards[_currentIndex].answer,
+                      ))),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  OutlinedButton.icon(
+                      onPressed: showPreviousCard,
+                      icon: Icon(Icons.chevron_left),
+                      label: Text('Prev')),
+                  OutlinedButton.icon(
+                      onPressed: showNextCard,
+                      icon: Icon(Icons.chevron_right),
+                      label: Text('Next')),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void showNextCard() {
+    setState(() {
+      _currentIndex =
+          (_currentIndex + 1 < _flashcards.length) ? _currentIndex + 1 : 0;
+    });
+  }
+
+  void showPreviousCard() {
+    setState(() {
+      _currentIndex =
+          (_currentIndex - 1 >= 0) ? _currentIndex - 1 : _flashcards.length - 1;
+    });
+  }
 }
