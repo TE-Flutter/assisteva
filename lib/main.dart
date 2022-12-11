@@ -1,103 +1,704 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_declarations, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
-import 'package:flip_card/flip_card.dart';
 
-class Flashcard {
-  final String question;
-  final String answer;
+import 'home_screen.dart';
+import 'data_and_lists.dart';
 
-  Flashcard({required this.question, required this.answer});
+final logoImageUrl = 'https://i.ibb.co/M6RMGpk/Group-19.png';
+final UserImageUrl =
+    'https://upload.wikimedia.org/wikipedia/commons/6/67/User_Avatar.png';
+
+void main() {
+  runApp(const MyApp());
 }
 
-class FlashcardView extends StatelessWidget {
-  final String text;
-
-  FlashcardView({Key? key, required this.text}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      child: Center(
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
+    return MaterialApp(
+        // Remove the debug banner
+        debugShowCheckedModeBanner: false,
+        title: 'TevaLearn',
+        theme: ThemeData(
+          primarySwatch: Colors.purple,
+        ),
+        home: SignInScreen());
+  }
+}
+
+// Text, Column, Row, Button, Navigation
+// Scaffold, Center
+
+////ROUTTTESSSS YA HAYTHAM KOLLHOM HENAAAA >>>>>>>>>>>>>
+///General Go Back Button//// NOOO NEEEED
+goBack(BuildContext context) {
+  Navigator.of(context).pop();
+}
+
+class GoBackButton extends StatelessWidget {
+  const GoBackButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: () => goBack(context), child: Text("Go Back"));
+  }
+}
+
+///////Go To Explore Screen///////
+// goToExploreScreen(BuildContext context) {
+//   Navigator.push(
+//     context,
+//     MaterialPageRoute(
+//       builder: (context) => ExploreScreen(),
+//     ),
+//   );
+// }
+
+//////////Go To Course List Screen route>>>>>>>>
+// goToCoursesListScreen(BuildContext context) {
+//   Navigator.push(
+//     context,
+//     MaterialPageRoute(
+//       builder: (context) => CoursesListScreen(),
+//     ),
+//   );
+// }
+
+//////////Go To course route>>>>>>>>
+gotoBrailleCourseScreen(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => BrailleCourseScreen(),
+    ),
+  );
+}
+
+//////////Go To Account route>>>>>>>>
+gotoAccountScreen(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => AccountScreen(),
+    ),
+  );
+}
+
+goToHomeScreen(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => HomeScreen(),
+    ),
+  );
+}
+
+goToSignUpScreen(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => SignUpScreen(),
+    ),
+  );
+}
+
+goToCoursesListScreen(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => CoursesListScreen(),
+    ),
+  );
+}
+
+////Dynamic ROUTE WITH DATA AND LISTS PAGE///////
+void gotoDetailsScreen(BuildContext ctx, Course course) {
+  Navigator.push(
+    ctx,
+    MaterialPageRoute(
+      builder: (context) => CourseDetailsScreen(course: course),
+    ),
+  );
+}
+
+void goToCoursesListScreen2(
+    BuildContext ctx, Category category, Course course) {
+  Navigator.push(
+    ctx,
+    MaterialPageRoute(
+      builder: (context) =>
+          CoursesListScreen2(category: category, course: course),
+    ),
+  );
+}
+
+////// DYNAMIC Courses List Screen>>>>>>>>>
+class CoursesListScreen2 extends StatelessWidget {
+  final Category category;
+  final Course course;
+
+  const CoursesListScreen2(
+      {super.key, required this.category, required this.course});
+
+  void gotoDetailsScreen(BuildContext ctx, Course course) {
+    Navigator.push(
+      ctx,
+      MaterialPageRoute(
+        builder: (context) => CoursesListScreen2(
+          course: course,
+          category: category,
+        ),
+      ),
+    );
+  }
+
+  Widget buildcourse(BuildContext ctx, int index) {
+    // Category category = category[index];
+    // Course course = course[index];
+
+    return ListTile(
+      leading: const FlutterLogo(),
+      title: Text(course.title),
+      subtitle: Text(course.instructorName),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => gotoDetailsScreen(ctx, course),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Courses List')),
+      body: ListView.builder(
+        // itemCount: courses.length,
+        itemBuilder: buildcourse,
+      ),
+    );
+  }
+}
+
+class CourseDetailsScreen2 extends StatelessWidget {
+  final Course course;
+
+  const CourseDetailsScreen2({super.key, required this.course});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(course.title)),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text('Taught by ${course.instructorName}'),
+            Text('Rating: ${course.rating} of 5'),
+            Text(course.description),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Go back'),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-void main() {
-  runApp(MyApp());
-}
+// Widget buildItem(BuildContext ctx, int index) {
+//   Category category = categories[index];
 
-class MyApp extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _MyAppState();
-}
+//   return ListTile(
+//     leading: const FlutterLogo(),
+//     title: Text(category.categoryname),
+//     //subtitle: Text(courses.instructorName),
+//     trailing: const Icon(Icons.chevron_right),
+//     //onTap: () => gotoDetailsScreen(ctx, category),
+//   );
+// }
 
-class _MyAppState extends State<MyApp> {
-  List<Flashcard> _flashcards = [
-    Flashcard(
-        question: "What programming language does Flutter use?",
-        answer: "Dart"),
-    Flashcard(question: "Application name?", answer: "Assisteva"),
-    Flashcard(
-        question: "Our teacher's full name?",
-        answer: "Ahmed Alaa Abdelgawad Abdelgawad ElBatanony")
-  ];
+///////////// SIGN IN "LOGIN" SCREEN//////////////////
+class SignInScreen extends StatelessWidget {
+  const SignInScreen({super.key});
 
-  int _currentIndex = 0;
+  // int calculateSomething() {
+  //   return 5 + 7;
+  //   // print('5 + 7');
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(80.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                  width: 250,
-                  height: 250,
-                  child: FlipCard(
-                      front: FlashcardView(
-                        text: _flashcards[_currentIndex].question,
-                      ),
-                      back: FlashcardView(
-                        text: _flashcards[_currentIndex].answer,
-                      ))),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  OutlinedButton.icon(
-                      onPressed: showPreviousCard,
-                      icon: Icon(Icons.chevron_left),
-                      label: Text('Prev')),
-                  OutlinedButton.icon(
-                      onPressed: showNextCard,
-                      icon: Icon(Icons.chevron_right),
-                      label: Text('Next')),
-                ],
+              Image.network(logoImageUrl),
+              SizedBox(height: 100),
+              Text('Login',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              SizedBox(height: 50),
+              ElevatedButton(
+                  child: Text('Sign in with Facebook'),
+                  onPressed: () => goToHomeScreen(context),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                        Color.fromARGB(255, 54, 139, 244)),
+                  )),
+              SizedBox(height: 20),
+              ElevatedButton(
+                  child: Text('Sign in with Google'),
+                  onPressed: () => goToHomeScreen(context),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                  )),
+              SizedBox(height: 20),
+              ElevatedButton(
+                  child: Text('Sign in with Apple'),
+                  onPressed: () => goToHomeScreen(context),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.black),
+                  )),
+              SizedBox(height: 20),
+              TextButton(
+                style: ButtonStyle(
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                ),
+                onPressed: () => goToSignUpScreen(context),
+                child: Text("Don't have account? Sign Up"),
               )
+
+              // ElevatedButton(
+              //     onPressed: () => print(calculateSomething()),
+              //     child: Text('Calculate Something'))
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  void showNextCard() {
-    setState(() {
-      _currentIndex =
-          (_currentIndex + 1 < _flashcards.length) ? _currentIndex + 1 : 0;
-    });
+///////////// SIGN Up SCREEN//////////////////
+class SignUpScreen extends StatelessWidget {
+  const SignUpScreen({super.key});
+
+  goToHomeScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(),
+      ),
+    );
   }
 
-  void showPreviousCard() {
-    setState(() {
-      _currentIndex =
-          (_currentIndex - 1 >= 0) ? _currentIndex - 1 : _flashcards.length - 1;
-    });
+  goToSignInScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SignInScreen(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(80.0),
+          child: Column(
+            children: [
+              Image.network(logoImageUrl),
+              SizedBox(height: 100),
+              Text('Signup',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              SizedBox(height: 50),
+              ElevatedButton(
+                  child: Text('Sign in with Facebook'),
+                  onPressed: () => goToHomeScreen(context),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                        Color.fromARGB(255, 54, 139, 244)),
+                  )),
+              SizedBox(height: 20),
+              ElevatedButton(
+                  child: Text('Sign up with Google'),
+                  onPressed: () => goToHomeScreen(context),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                  )),
+              SizedBox(height: 20),
+              ElevatedButton(
+                  child: Text('Sign up with Apple'),
+                  onPressed: () => goToHomeScreen(context),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.black),
+                  )),
+              SizedBox(height: 20),
+              TextButton(
+                style: ButtonStyle(
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                ),
+                onPressed: () => goToSignInScreen(context),
+                child: Text("Do you have an account? Login"),
+              )
+
+              // ElevatedButton(
+              //     onPressed: () => print(calculateSomething()),
+              //     child: Text('Calculate Something'))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/////  Courses List Screen CoursesListScreen//////////
+class CoursesListScreen extends StatelessWidget {
+  const CoursesListScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Braille 101 Course"),
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Text('School Curriculum'),
+            ElevatedButton.icon(
+                onPressed: () => gotoBrailleCourseScreen(context),
+                icon: Icon(Icons.map),
+                label: Text('Braille 101 Course')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CourseDetailsScreen extends StatelessWidget {
+  final Course course;
+
+  const CourseDetailsScreen({super.key, required this.course});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(course.title)),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text('Taught by ${course.instructorName}'),
+            Text('Rating: ${course.rating} of 5'),
+            Text(course.description),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Go back'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+////////1st Course Screen////////////
+class BrailleCourseScreen extends StatelessWidget {
+  const BrailleCourseScreen({super.key});
+
+  gotoLesson1Screen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Lesson1Screen(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Braille 101"),
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Image.network(logoImageUrl),
+            SizedBox(height: 20),
+            Text(
+              'Braille 101',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            ElevatedButton(
+                onPressed: () => gotoLesson1Screen(context),
+                child: Text("Lesson 1"))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+////Lesson Screen/////
+class Lesson1Screen extends StatelessWidget {
+  const Lesson1Screen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Lesson"),
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            videoPlaceholder(),
+            GoBackButton(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Placeholder videoPlaceholder() {
+    return Placeholder(
+      child: SizedBox(
+        height: 100,
+        child: Center(child: Text('Video')),
+      ),
+    );
+  }
+}
+
+class AccountScreen extends StatelessWidget {
+  const AccountScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('TevaLearn | Account')),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                    onPressed: () => goToHomeScreen(context),
+                    child: Text('Explore')),
+                ElevatedButton(
+                    onPressed: () => gotoCoursesListMockScreen(context),
+                    child: Text('My Courses')),
+                ElevatedButton(onPressed: null, child: Text('Account')),
+              ],
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: Container(
+                height: 200,
+                width: 200,
+                child: Image.network(UserImageUrl),
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Haytham Hamed'),
+                ElevatedButton(onPressed: () => null, child: Text('Edit')),
+              ],
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('hello@haythamhamed.com'),
+                ElevatedButton(onPressed: () => null, child: Text('Edit')),
+              ],
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Visually Impaired',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                ElevatedButton(onPressed: () => null, child: Text('Edit')),
+              ],
+            ),
+            SizedBox(height: 50),
+            Container(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                  child: Text('Log Out',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      )),
+                  onPressed: () => null,
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                        Color.fromARGB(255, 244, 54, 54)),
+                  )),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+//////_______________NEW Method MOCKSSSSSS___________////
+///
+
+gotoCoursesListMockScreen(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => CoursesListMockScreen(),
+    ),
+  );
+}
+
+class CoursesListMockScreen extends StatelessWidget {
+  // Generate some dummy data
+  final List<Map<String, dynamic>> _items = List.generate(
+      10,
+      (index) => {
+            "id": index,
+            "title": "Course $index",
+            "subtitle": "Subtitle $index"
+          });
+
+  CoursesListMockScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Courses List'),
+        ),
+        body: ListView(
+            children: ListTile.divideTiles(
+                color: Colors.deepPurple,
+                tiles: _items.map((item) => ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Color.fromARGB(255, 234, 85, 231),
+                      ),
+                      title: Text(item['title']),
+                      subtitle: Text('Adam Noah'),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.play_circle_fill),
+                        onPressed: () => gotoCourseDetailsMockScreen(context),
+                      ),
+                    ))).toList()));
+  }
+}
+
+////Mock Course Detail Page/////>>>>
+
+gotoCourseDetailsMockScreen(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => CourseDetailsMockScreen(),
+    ),
+  );
+}
+
+class CourseDetailsMockScreen extends StatelessWidget {
+  // Generate some dummy data
+  final List<Map<String, dynamic>> _items = List.generate(
+      5,
+      (index) =>
+          {"id": index, "title": "Lesson $index", "subtitle": "5 Minutes"});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Course Details'),
+        ),
+        body: Column(
+          children: [
+            SizedBox(height: 20),
+            Container(
+              height: 100,
+              width: 400,
+              child: Placeholder(),
+            ),
+            SizedBox(height: 20),
+            Text('Course Title',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                )),
+            Text('Adam Noah',
+                style: TextStyle(
+                  fontSize: 15,
+                )),
+            Text('4.5 out of 5.0',
+                style: TextStyle(
+                  fontSize: 10,
+                )),
+            SizedBox(height: 20),
+            Container(
+              height: 400,
+              child: ListTileTheme(
+                contentPadding: const EdgeInsets.all(10),
+                iconColor: Colors.purple,
+                textColor: Colors.black54,
+                tileColor: Color.fromARGB(255, 255, 144, 244),
+                style: ListTileStyle.list,
+                dense: true,
+                child: ListView.builder(
+                  itemCount: _items.length,
+                  itemBuilder: (_, index) => Card(
+                    margin: const EdgeInsets.all(10),
+                    child: ListTile(
+                      title: Text(
+                        _items[index]['title'],
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(_items[index]['subtitle']),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.favorite)),
+                          IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.play_circle_fill)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ));
   }
 }
