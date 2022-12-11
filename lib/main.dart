@@ -626,12 +626,20 @@ gotoCourseDetailsMockScreen(BuildContext context) {
   );
 }
 
-class CourseDetailsMockScreen extends StatelessWidget {
+class CourseDetailsMockScreen extends StatefulWidget {
+  @override
+  State<CourseDetailsMockScreen> createState() =>
+      _CourseDetailsMockScreenState();
+}
+
+class _CourseDetailsMockScreenState extends State<CourseDetailsMockScreen> {
   // Generate some dummy data
   final List<Map<String, dynamic>> _items = List.generate(
       5,
       (index) =>
           {"id": index, "title": "Lesson $index", "subtitle": "5 Minutes"});
+
+  bool addFavorite = false;
 
   @override
   Widget build(BuildContext context) {
@@ -686,8 +694,15 @@ class CourseDetailsMockScreen extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.favorite)),
+                              icon: Icon(addFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border),
+                              onPressed: () {
+                                // Setting the state
+                                setState(() {
+                                  addFavorite = !addFavorite;
+                                });
+                              }),
                           IconButton(
                               onPressed: () {},
                               icon: const Icon(Icons.play_circle_fill)),
