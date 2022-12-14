@@ -640,6 +640,7 @@ class _CourseDetailsMockScreenState extends State<CourseDetailsMockScreen> {
           {"id": index, "title": "Lesson $index", "subtitle": "5 Minutes"});
 
   bool addFavorite = false;
+  bool addcourse = false;
 
   @override
   Widget build(BuildContext context) {
@@ -668,6 +669,19 @@ class _CourseDetailsMockScreenState extends State<CourseDetailsMockScreen> {
             Text('4.5 out of 5.0',
                 style: TextStyle(
                   fontSize: 10,
+                )),
+            SizedBox(height: 20),
+            ElevatedButton(
+                child: Text('Enrol'),
+                onPressed: () {
+                  // Setting the state
+                  setState(() {
+                    addcourse = !addcourse;
+                  });
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                      Color.fromARGB(255, 54, 244, 114)),
                 )),
             SizedBox(height: 20),
             Container(
